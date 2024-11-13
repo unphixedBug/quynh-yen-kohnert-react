@@ -21,10 +21,11 @@ const Navbar = () => {
   return (
     <>
       {isDesktop && (
-        <nav className="navbar-desktop fixed left-0 top-0 h-full w-1/12 bg-gray-100 flex flex-col items-center p-4">
+        <nav className="navbar-desktop fixed left-0 top-0 h-full w-1/12 flex flex-col items-center p-4">
           <Link to="/" className="text-2xl font-bold mb-8">
             Q-Y-K
           </Link>
+          <div className="flex flex-col">
           <Link to="/creations" className="mb-4">
             Créations
           </Link>
@@ -37,6 +38,7 @@ const Navbar = () => {
           <Link to="/boutique" className="mb-4">
             Boutique
           </Link>
+          </div>
           <div className="mt-auto flex flex-col items-center">
             <Link to="/langue" className="mb-4">
               Langue

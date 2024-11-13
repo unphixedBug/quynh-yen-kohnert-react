@@ -1,70 +1,87 @@
-import { useState } from "react";
-import { useFetch } from "../hooks/useFetch";
-import ArtworkCard from "../components/ArtworkCard";
-import ArtworkModal from "../components/ArtworkModal";
-import Title from "../components/Title";
-import { useMediaQuery } from "react-responsive";
-import { FaTh, FaGripVertical } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import ArtworkModal from '../components/ArtworkModal'; // Chemin à ajuster selon ton arborescence de fichiers
+import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 
-const CreationsPage = () => {
-  const { data, loading, error } = useFetch(
-    "https://quynh-yen-kohnert-strapi.onrender.com/api/oeuvres?populate=*"
-  );
-  const [selectedArtwork, setSelectedArtwork] = useState(null);
-  const [isTwoColumn, setIsTwoColumn] = useState(false); // État pour le mode d'affichage
-  const isDesktop = useMediaQuery({ minWidth: 768 });
 
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p>Erreur lors du chargement des œuvres.</p>;
 
-  const handleClick = (artwork) => {
-    if (isDesktop) {
-      setSelectedArtwork(artwork);
-    } else {
-      window.location.href = `/creations/${artwork.id}`; // Redirige vers la page individuelle sur mobile
-    }
+const Oeuvres = () => {
+  const [oeuvres, setOeuvres] = useState([]);
+  const [selectedArtwork, setSelectedArtwork] = useState(null); // Œuvre sélectionnée pour la modale
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchOeuvres = async () => {
+      try {
+        const response = await axios.get('https://groupe2.triptyk.eu/wp-json/wp/v2/creation?per_page=20');
+        const data = response.data;
+
+        const oeuvresWithImages = await Promise.all(
+          data.map(async (oeuvre) => {
+            if (oeuvre.featured_media) {
+              const mediaResponse = await axios.get(`https://groupe2.triptyk.eu/wp-json/wp/v2/media/${oeuvre.featured_media}`);
+              const mediaData = mediaResponse.data;
+              return { ...oeuvre, imageUrl: mediaData.source_url };
+            } else {
+              return { ...oeuvre, imageUrl: 'https://via.placeholder.com/150' };
+            }
+          })
+        );
+
+        setOeuvres(oeuvresWithImages);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+      }
+    };
+
+    fetchOeuvres();
+  }, []);
+
+  const openModal = (oeuvre) => {
+    setSelectedArtwork(oeuvre);
+    setIsModalOpen(true);
   };
 
-  const toggleLayout = () => setIsTwoColumn(!isTwoColumn); // Fonction pour basculer l'affichage
+  const closeModal = () => {
+    setSelectedArtwork(null);
+    setIsModalOpen(false);
+  };
+
+  const handleNext = () => {
+    const currentIndex = oeuvres.findIndex(oeuvre => oeuvre.id === selectedArtwork.id);
+    const nextIndex = (currentIndex + 1) % oeuvres.length;
+    setSelectedArtwork(oeuvres[nextIndex]);
+  };
+
+  const handlePrev = () => {
+    const currentIndex = oeuvres.findIndex(oeuvre => oeuvre.id === selectedArtwork.id);
+    const prevIndex = (currentIndex - 1 + oeuvres.length) % oeuvres.length;
+    setSelectedArtwork(oeuvres[prevIndex]);
+  };
 
   return (
-    <>
-      <Title>Mes Créations</Title>
-
-      {/* Bouton de changement d'affichage */}
-      {isDesktop && (
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleLayout}
-            className="bg-gray-100 p-2 rounded shadow-md hover:bg-gray-200"
-          >
-            {isTwoColumn ? <FaGripVertical size={24} /> : <FaTh size={24} />}
-          </button>
-        </div>
-      )}
-
-      {/* Disposition des œuvres */}
-      <div
-        className={`creations-page grid place-items-center gap-4 ${
-          isTwoColumn ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
-        }`}
-      >
-        {data?.data.map((artwork) => (
-          <ArtworkCard
-            key={artwork.id}
-            artwork={artwork}
-            onClick={handleClick}
-          />
+    <div className='flex flex-col items-center'>
+      <h1 className='font-display text-3xl text-primary'>Mes créations</h1>
+      <ul className='flex flex-col items-center gap-5'>
+        {oeuvres.map((oeuvre) => (
+          <li key={oeuvre.id} onClick={() => openModal(oeuvre)} className="cursor-pointer flex items-center">
+            <img src={oeuvre.imageUrl} alt={oeuvre.title.rendered} style={{ width: '150px', height: 'auto' }} />
+            <h2 className='font-display -rotate-90'>{oeuvre.title.rendered}</h2>
+          </li>
         ))}
-        {isDesktop && selectedArtwork && (
-          <ArtworkModal
-            artwork={selectedArtwork}
-            onClose={() => setSelectedArtwork(null)}
-          />
-        )}
-      </div>
-    </>
+      </ul>
+
+      {isModalOpen && (
+        <ArtworkModal
+          artwork={selectedArtwork}
+          onClose={closeModal}
+          onNext={handleNext}
+          onPrev={handlePrev}
+        />
+      )}
+    </div>
   );
 };
 
-export default CreationsPage;
+
+export default Oeuvres;
