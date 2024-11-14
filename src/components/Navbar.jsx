@@ -6,9 +6,11 @@ import {
   FaBars,
   FaShoppingCart,
   FaEnvelope,
-  FaInstagram,
+  FaInstagram
 } from "react-icons/fa"; // Icônes pour mobile
 import { MdClose } from "react-icons/md";
+import { CiMail } from "react-icons/ci";
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,34 +23,37 @@ const Navbar = () => {
   return (
     <>
       {isDesktop && (
-        <nav className="navbar-desktop fixed left-0 top-0 h-full w-1/12 flex flex-col items-center p-4">
-          <Link to="/" className="text-2xl font-bold mb-8">
+        <nav className="navbar-desktop fixed left-0 top-0 h-full w-[150px] flex flex-col justify-between items-center p-4">
+          <Link to="/" className="text-2xl font-bold">
             Q-Y-K
           </Link>
           <div className="flex flex-col">
-          <Link to="/creations" className="mb-4">
-            Créations
-          </Link>
-          <Link to="/mon-histoire" className="mb-4">
-            Mon histoire
-          </Link>
-          <Link to="/contact" className="mb-4">
-            Contact
-          </Link>
-          <Link to="/boutique" className="mb-4">
-            Boutique
-          </Link>
+            <Link to="/creations" className="mb-4">
+              Créations
+            </Link>
+            <Link to="/mon-histoire" className="mb-4">
+              Mon histoire
+            </Link>
+            <Link to="/contact" className="mb-4">
+              Contact
+            </Link>
+            <Link to="/boutique" className="mb-4">
+              Boutique
+            </Link>
           </div>
           <div className="mt-auto flex flex-col items-center">
+            <div>
+            <FaInstagram size={24} />
+            <CiMail size={24} />
+            </div>
+            <div>
             <Link to="/langue" className="mb-4">
               Langue
             </Link>
             <Link to="/panier" className="mb-4">
               Panier
             </Link>
-            <Link to="/panier">
-              <FaShoppingCart size={20} />
-            </Link>
+            </div>
           </div>
         </nav>
       )}
@@ -72,7 +77,7 @@ const Navbar = () => {
       )}
 
       {isMobile && (
-        <nav className="navbar-mobile fixed bottom-0 left-0 w-full bg-gray-100 flex justify-around p-4 shadow">
+        <nav className="navbar-mobile fixed bottom-0 left-0 w-full bg-light flex justify-around p-4 shadow">
           <Link to="/">
             <FaHome size={24} />
           </Link>
@@ -86,7 +91,7 @@ const Navbar = () => {
       )}
 
       {isMobile && isMenuOpen && (
-        <div className="mobile-menu fixed bottom-0 left-0 w-full bg-white z-50 p-8 flex flex-col items-center">
+        <div className="mobile-menu fixed bottom-0 left-0 w-full bg-light z-50 p-8 flex flex-col items-center shadow">
           <div className="flex flex-col items-center w-full">
             <Link to="/creations" className="mb-6 text-xl" onClick={toggleMenu}>
               Créations

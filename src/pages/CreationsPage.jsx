@@ -13,7 +13,7 @@ const Oeuvres = () => {
   useEffect(() => {
     const fetchOeuvres = async () => {
       try {
-        const response = await axios.get('https://groupe2.triptyk.eu/wp-json/wp/v2/creation?per_page=20');
+        const response = await axios.get('https://groupe2.triptyk.eu/wp-json/wp/v2/oeuvre?per_page=20');
         const data = response.data;
 
         const oeuvresWithImages = await Promise.all(

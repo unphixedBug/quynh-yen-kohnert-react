@@ -33,19 +33,22 @@ const FAQ = () => {
   };
 
   return (
-    <div className="faq-container">
-      <h2>FAQ</h2>
+    <div className="faq-container p-4">
+      <h2 className="text-2xl font-semibold mb-4">FAQ</h2>
       {faqs.map((faq) => (
-        <div key={faq.id} className="faq-item">
+        <div key={faq.id} className="faq-item border-b border-gray-300 py-2">
           <h3 
             onClick={() => toggleAnswer(faq.id)} 
-            className="faq-question cursor-pointer text-blue-500"
+            className="faq-question cursor-pointer font-semibold flex items-center text-gray-800"
           >
             {faq.acf.question_faq}
+            <span className={`ml-auto transform transition-transform ${openQuestionId === faq.id ? 'rotate-180' : 'rotate-0'}`}>
+              ▼
+            </span>
           </h3>
           {openQuestionId === faq.id && (
             <div 
-              className="faq-answer text-gray-700 mt-2"
+              className="faq-answer text-gray-700 mt-2 italic pl-4"
               dangerouslySetInnerHTML={{ __html: faq.acf.reponse_faq }} // Rendu de HTML brut
             />
           )}

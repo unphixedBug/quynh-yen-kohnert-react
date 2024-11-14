@@ -1,10 +1,14 @@
 import FAQ from "../components/FAQ";
+import ContactForm from "../components/ContactForm";
+import Title from "../components/Title";
 
 const Contact = () => {
 
     return (
       <div>
-              <FAQ />
+        <Title>Title</Title>
+        <ContactForm />
+        <FAQ />
       </div>
     );
   };
