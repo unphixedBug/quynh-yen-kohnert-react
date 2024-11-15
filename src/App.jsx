@@ -1,15 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import CreationsPage from './pages/CreationsPage';
 import ArtworkPage from './pages/ArtworkPage';
 import HomePage from './pages/HomePage';
 import Contact from './pages/Contact';
-// Importe ici les autres pages si nécessaire
 
 const App = () => {
   return (
-    <Router>
+    <BrowserRouter basename={process.env.NODE_ENV === 'production' ? '/quynh-yen-kohnert-react' : '/'}>
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -18,7 +17,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </Layout>
-    </Router>
+    </BrowserRouter>
   );
 };
 
