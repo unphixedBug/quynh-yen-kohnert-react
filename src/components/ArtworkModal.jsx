@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { FaChevronLeft, FaChevronRight, FaTimes } from "react-icons/fa";
 
 const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -12,9 +12,27 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
     setCurrentImageIndex(index);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft") {
+        onPrev();
+      } else if (event.key === "ArrowRight") {
+        onNext();
+      } else if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onPrev, onNext, onClose]);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
-      <div className="bg-white p-6 rounded-lg max-w-4xl w-full flex relative">
+      <div className="bg-white p-6 rounded-lg max-w-4xl w-full flex relative h-5/6">
         {/* Navigation précédente */}
         <button
           onClick={onPrev}
@@ -49,7 +67,9 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
                 src={image}
                 alt={`Thumbnail ${index}`}
                 className={`w-16 h-16 object-cover rounded cursor-pointer ${
-                  currentImageIndex === index ? "border-2 border-red-500" : "border"
+                  currentImageIndex === index
+                    ? "border-2 border-red-500"
+                    : "border"
                 }`}
                 onClick={() => handleThumbnailClick(index)}
               />
