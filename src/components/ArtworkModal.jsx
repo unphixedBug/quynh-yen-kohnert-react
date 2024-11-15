@@ -1,25 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
-
 
 const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  if (!artwork) return null; // Si aucune œuvre n'est sélectionnée
+
+  const images = artwork.images || []; // Tableau des images
 
   const handleThumbnailClick = (index) => {
     setCurrentImageIndex(index);
   };
 
-  if (!artwork) return null; // Ne rien afficher si aucune œuvre sélectionnée
-
-  // Initialiser un tableau d'images vide si artwork.images est undefined
-  const images = artwork.images || [];
-
-  console.log(images);
-  
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
       <div className="bg-white p-6 rounded-lg max-w-4xl w-full flex relative">
+        {/* Navigation précédente */}
         <button
           onClick={onPrev}
           className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-600 text-3xl"
@@ -27,6 +23,7 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
           <FaChevronLeft />
         </button>
 
+        {/* Navigation suivante */}
         <button
           onClick={onNext}
           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 text-3xl"
@@ -34,12 +31,12 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
           <FaChevronRight />
         </button>
 
+        {/* Contenu principal */}
         <div className="flex-1 flex flex-col items-center">
-          {/* Vérifie si l'image existe avant de l'afficher */}
           {images[currentImageIndex] ? (
             <img
-              src={images[currentImageIndex].url}
-              alt={artwork.nom}
+              src={images[currentImageIndex]}
+              alt={artwork.title}
               className="w-full h-auto object-contain rounded mb-4"
             />
           ) : (
@@ -49,8 +46,8 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
             {images.map((image, index) => (
               <img
                 key={index}
-                src={image.url}
-                alt={`${artwork.nom} thumbnail`}
+                src={image}
+                alt={`Thumbnail ${index}`}
                 className={`w-16 h-16 object-cover rounded cursor-pointer ${
                   currentImageIndex === index ? "border-2 border-red-500" : "border"
                 }`}
@@ -60,6 +57,7 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
           </div>
         </div>
 
+        {/* Détails de l'œuvre */}
         <div className="flex-1 p-6 flex flex-col justify-between">
           <button
             onClick={onClose}
@@ -67,14 +65,14 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
           >
             <FaTimes />
           </button>
-          <h2 className="text-3xl font-bold text-red-500 mb-4">
-            {artwork.nom}
+          <h2 className="text-3xl font-display font-bold text-red-500 mb-4">
+            {artwork.title}
           </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             {artwork.description}
           </p>
           <button className="self-start mt-auto bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
-            Mes Œuvres à l'achat
+            Acheter cette œuvre
           </button>
         </div>
       </div>
@@ -82,4 +80,4 @@ const ArtworkModal = ({ artwork, onClose, onNext, onPrev }) => {
   );
 };
 
-export default ArtworkModal
+export default ArtworkModal;
