@@ -54,7 +54,7 @@ const Oeuvres = () => {
   const openArtwork = (oeuvre) => {
     if (isMobile) {
       // Navigation vers une nouvelle page sur mobile
-      navigate(`/oeuvres/${oeuvre.id}`, { state: { artwork: oeuvre } });
+      navigate(`/creations/${oeuvre.id}`, { state: { artwork: oeuvre } });
     } else {
       // Ouverture de la modale sur desktop
       setSelectedArtwork(oeuvre);
